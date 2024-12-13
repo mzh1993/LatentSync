@@ -23,42 +23,42 @@ We present LatentSync, an end-to-end lip sync framework based on audio condition
   </tr>
   <tr>
     <td>
-      <video src=https://github.com/user-attachments/assets/03e95555-39c5-4e46-8df3-69d24a95c84e controls preload></video>
+      <video src=https://github.com/user-attachments/assets/ff3a84da-dc9b-498a-950f-5c54f58dd5c5 controls preload></video>
     </td>
     <td>
-      <video src=https://github.com/user-attachments/assets/122f7678-cc13-46f6-890b-c50a198548df controls preload></video>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <video src=https://github.com/user-attachments/assets/f5804101-ea20-42eb-8d92-2e8a542d6b97 controls preload></video>
-    </td>
-    <td>
-      <video src=https://github.com/user-attachments/assets/e701cebd-12b6-4751-97cb-6b45e6c0036a controls preload></video>
+      <video src=https://github.com/user-attachments/assets/150e00fd-381e-4421-a478-a9ea3d1212a8 controls preload></video>
     </td>
   </tr>
   <tr>
     <td>
-      <video src=https://github.com/user-attachments/assets/b7da5495-a02b-4efe-86bf-df56246725f0 controls preload></video>
+      <video src=https://github.com/user-attachments/assets/32c830a9-4d7d-4044-9b33-b184d8e11010 controls preload></video>
     </td>
     <td>
-      <video src=https://github.com/user-attachments/assets/99fcf7e7-2db7-488b-93de-c6ed78203a6d controls preload></video>
+      <video src=https://github.com/user-attachments/assets/84e4fe9d-b108-44a4-8712-13a012348145 controls preload></video>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <video src=https://github.com/user-attachments/assets/7510a448-255a-44ee-b093-a1b98bd3961d controls preload></video>
+    </td>
+    <td>
+      <video src=https://github.com/user-attachments/assets/6150c453-c559-4ae0-bb00-c565f135ff41 controls preload></video>
     </td>
   </tr>
   <tr>
     <td width=300px>
-      <video src=https://github.com/user-attachments/assets/d08287ad-48c1-4bc3-8c8f-a333cf57f5fa controls preload></video>
+      <video src=https://github.com/user-attachments/assets/0f7f9845-68b2-4165-bd08-c7bbe01a0e52 controls preload></video>
     </td>
     <td width=300px>
-      <video src=https://github.com/user-attachments/assets/872525ef-bac4-44d1-9ecf-d51928b3aaf5 controls preload></video>
+      <video src=https://github.com/user-attachments/assets/c34fe89d-0c09-4de3-8601-3d01229a69e3 controls preload></video>
     </td>
   </tr>
   <tr>
     <td>
-      <video src=https://github.com/user-attachments/assets/3732d784-e86f-43e3-964a-eb5a01a55e78 controls preload></video>
+      <video src=https://github.com/user-attachments/assets/7ce04d50-d39f-4154-932a-ec3a590a8f64 controls preload></video>
     </td>
     <td>
-      <video src=https://github.com/user-attachments/assets/03540ae6-e75d-4314-aaaa-bdc886ecc466 controls preload></video>
+      <video src=https://github.com/user-attachments/assets/70bde520-42fa-4a0e-b66c-d3040ae5e065 controls preload></video>
     </td>
   </tr>
 </table>
