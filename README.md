@@ -65,8 +65,45 @@ We present LatentSync, an end-to-end lip sync framework based on audio condition
 
 (Photorealistic videos are filmed by contracted models, and anime videos are from [VASA-1](https://www.microsoft.com/en-us/research/project/vasa-1/) and [EMO](https://humanaigc.github.io/emote-portrait-alive/))
 
-## 📑 Open-Source Plan
+## 📑 Open-source Plan
 
-- [ ] Inference code and checkpoints
+- [x] Inference code and checkpoints
 - [ ] Data processing pipeline
 - [ ] Training code
+
+## Setting up the Environment
+
+Install the required packages and download the checkpoints via:
+
+```bash
+source setup_env.sh
+```
+
+If the download is successful, the checkpoints should appear as follows:
+
+```
+./checkpoints/
+|-- latentsync_unet.pt
+|-- latentsync_syncnet.pt
+|-- whisper
+|   `-- tiny.pt
+|-- auxiliary
+|   |-- 2DFAN4-cd938726ad.zip
+|   |-- i3d_torchscript.pt
+|   |-- koniq_pretrained.pkl
+|   |-- s3fd-619a316812.pth
+|   |-- sfd_face.pth
+|   |-- syncnet_v2.model
+|   |-- vgg16-397923af.pth
+|   `-- vit_g_hybrid_pt_1200e_ssv2_ft.pth
+```
+
+These already include all the checkpoints required for latentsync training and inference. If you only want to try inference, you only need to download `latentsync_unet.pt` and `tiny.pt` from our [HuggingFace repo](https://huggingface.co/chunyu-li/LatentSync)
+
+## Inference
+
+Run the script for inference, which requires about 6.5GB GPU memory.
+
+```bash
+./inference.sh
+```
