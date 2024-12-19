@@ -14,7 +14,7 @@
 
 We present LatentSync, an end-to-end lip sync framework based on audio conditioned latent diffusion models without any intermediate motion representation, diverging from previous diffusion-based lip sync methods based on pixel space diffusion or two-stage generation. Our framework can leverage the powerful capabilities of Stable Diffusion to directly model complex audio-visual correlations.
 
-## Demo
+## 🎬 Demo
 
 <table class="center">
   <tr style="font-weight: bolder;text-align:center;">
@@ -68,10 +68,10 @@ We present LatentSync, an end-to-end lip sync framework based on audio condition
 ## 📑 Open-source Plan
 
 - [x] Inference code and checkpoints
-- [ ] Data processing pipeline
+- [x] Data processing pipeline
 - [ ] Training code
 
-## Setting up the Environment
+## 🔧 Setting up the Environment
 
 Install the required packages and download the checkpoints via:
 
@@ -98,12 +98,33 @@ If the download is successful, the checkpoints should appear as follows:
 |   `-- vit_g_hybrid_pt_1200e_ssv2_ft.pth
 ```
 
-These already include all the checkpoints required for latentsync training and inference. If you only want to try inference, you only need to download `latentsync_unet.pt` and `tiny.pt` from our [HuggingFace repo](https://huggingface.co/chunyu-li/LatentSync)
+These already include all the checkpoints required for latentsync training and inference. If you just want to try inference, you only need to download `latentsync_unet.pt` and `tiny.pt` from our [HuggingFace repo](https://huggingface.co/chunyu-li/LatentSync)
 
-## Inference
+## 🚀 Inference
 
-Run the script for inference, which requires about 6.5GB GPU memory.
+Run the script for inference, which requires about 6.5 GB GPU memory.
 
 ```bash
 ./inference.sh
 ```
+
+## 🔄 Data Processing Pipeline
+
+The complete data processing pipeline includes the following steps:
+
+1. Remove the broken video files.
+2. Resample the video FPS to 25, and resample the audio to 16000 Hz.
+3. Scene detect.
+4. Split each video into 5-10 second segments.
+5. Remove videos where the face is smaller than 256 $\times$ 256, as well as videos with more than one face.
+6. Affine transform the faces according to landmarks, then resize to 256 $\times$ 256.
+7. Remove videos with sync conf lower than 3, and adjust the audio-visual offset to 0.
+8. Calculate [hyperIQA](https://openaccess.thecvf.com/content_CVPR_2020/papers/Su_Blindly_Assess_Image_Quality_in_the_Wild_Guided_by_a_CVPR_2020_paper.pdf) score, and remove videos with scores lower than 40.
+
+Run the script to execute the data processing pipeline:
+
+```bash
+./data_processing_pipeline.sh
+```
+
+You can change the parameter `input_dir` in the script to specify the data directory to be processed. The processed data will be saved in the same directory. Each step will generate a new directory to prevent the need to redo the entire pipeline in case the process is interrupted by an unexpected error.
