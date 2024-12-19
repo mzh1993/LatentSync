@@ -69,7 +69,7 @@ We present LatentSync, an end-to-end lip sync framework based on audio condition
 
 - [x] Inference code and checkpoints
 - [x] Data processing pipeline
-- [ ] Training code
+- [x] Training code
 
 ## 🔧 Setting up the Environment
 
@@ -114,11 +114,11 @@ The complete data processing pipeline includes the following steps:
 
 1. Remove the broken video files.
 2. Resample the video FPS to 25, and resample the audio to 16000 Hz.
-3. Scene detect.
+3. Scene detect via [PySceneDetect](https://github.com/Breakthrough/PySceneDetect).
 4. Split each video into 5-10 second segments.
 5. Remove videos where the face is smaller than 256 $\times$ 256, as well as videos with more than one face.
-6. Affine transform the faces according to landmarks, then resize to 256 $\times$ 256.
-7. Remove videos with sync conf lower than 3, and adjust the audio-visual offset to 0.
+6. Affine transform the faces according to the landmarks detected by [face-alignment](https://github.com/1adrianb/face-alignment), then resize to 256 $\times$ 256.
+7. Remove videos with [sync confidence score](https://www.robots.ox.ac.uk/~vgg/publications/2016/Chung16a/chung16a.pdf) lower than 3, and adjust the audio-visual offset to 0.
 8. Calculate [hyperIQA](https://openaccess.thecvf.com/content_CVPR_2020/papers/Su_Blindly_Assess_Image_Quality_in_the_Wild_Guided_by_a_CVPR_2020_paper.pdf) score, and remove videos with scores lower than 40.
 
 Run the script to execute the data processing pipeline:
@@ -128,3 +128,23 @@ Run the script to execute the data processing pipeline:
 ```
 
 You can change the parameter `input_dir` in the script to specify the data directory to be processed. The processed data will be saved in the same directory. Each step will generate a new directory to prevent the need to redo the entire pipeline in case the process is interrupted by an unexpected error.
+
+## 🏋️‍♂️ Training U-Net
+
+Before training, you must process the data as described above and download all the checkpoints. We released a pretrained SyncNet with 94% accuracy on the VoxCeleb2 dataset for the supervision of U-Net training. Note that this SyncNet is trained on affine transformed videos, so when using or evaluating this SyncNet, you need to perform affine transformation on the video first (the code of affine transformation is included in the data processing pipeline).
+
+If all the preparations are complete, you can train the U-Net with the following script:
+
+```bash
+./train_unet.sh
+```
+
+You should change the parameters in U-Net config file to specify the data directory, checkpoint save path, and other training hyperparameters.
+
+## 🏋️‍♂️ Training SyncNet
+
+In case you want to train SyncNet on your own datasets, you can run the following script:
+
+```bash
+./train_syncnet.sh
+```
