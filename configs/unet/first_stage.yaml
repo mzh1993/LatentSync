@@ -21,7 +21,7 @@ ckpt:
 
 run:
   pixel_space_supervise: false
-  use_syncnet: true
+  use_syncnet: false
   sync_loss_weight: 0.05 # 1/283
   perceptual_loss_weight: 0.1 # 0.1
   recon_loss_weight: 1 # 1
