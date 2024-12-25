@@ -33,7 +33,7 @@ def main(config, args):
     else:
         raise NotImplementedError("cross_attention_dim must be 768 or 384")
 
-    audio_encoder = Audio2Feature(model_path=whisper_model_path, device="cuda")
+    audio_encoder = Audio2Feature(model_path=whisper_model_path, device="cuda", num_frames=config.data.num_frames)
 
     vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-mse", torch_dtype=torch.float16)
     vae.config.scaling_factor = 0.18215

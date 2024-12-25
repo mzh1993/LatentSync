@@ -112,7 +112,10 @@ def main(config):
         raise NotImplementedError("cross_attention_dim must be 768 or 384")
 
     audio_encoder = Audio2Feature(
-        model_path=whisper_model_path, device=device, audio_cache_dir=config.data.audio_cache_dir
+        model_path=whisper_model_path,
+        device=device,
+        audio_cache_dir=config.data.audio_cache_dir,
+        num_frames=config.data.num_frames,
     )
 
     unet, resume_global_step = UNet3DConditionModel.from_pretrained(
@@ -292,16 +295,14 @@ def main(config):
             mask = torch.nn.functional.interpolate(mask, size=config.data.resolution // vae_scale_factor)
 
             gt_latents = (
-                rearrange(gt_latents, "(b f) c h w -> b c f h w", f=config.data.num_frames)
-                - vae.config.shift_factor
+                rearrange(gt_latents, "(b f) c h w -> b c f h w", f=config.data.num_frames) - vae.config.shift_factor
             ) * vae.config.scaling_factor
             gt_masked_images = (
                 rearrange(gt_masked_images, "(b f) c h w -> b c f h w", f=config.data.num_frames)
                 - vae.config.shift_factor
             ) * vae.config.scaling_factor
             ref_images = (
-                rearrange(ref_images, "(b f) c h w -> b c f h w", f=config.data.num_frames)
-                - vae.config.shift_factor
+                rearrange(ref_images, "(b f) c h w -> b c f h w", f=config.data.num_frames) - vae.config.shift_factor
             ) * vae.config.scaling_factor
             mask = rearrange(mask, "(b f) c h w -> b c f h w", f=config.data.num_frames)
 
@@ -343,9 +344,7 @@ def main(config):
 
             # Predict the noise and compute loss
             # Mixed-precision training
-            with torch.autocast(
-                device_type="cuda", dtype=torch.float16, enabled=config.run.mixed_precision_training
-            ):
+            with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=config.run.mixed_precision_training):
                 pred_noise = unet(unet_input, timesteps, encoder_hidden_states=mel_overlap).sample
 
             if config.run.recon_loss_weight != 0:
