@@ -143,8 +143,10 @@ You should change the parameters in U-Net config file to specify the data direct
 
 ## 🏋️‍♂️ Training SyncNet
 
-In case you want to train SyncNet on your own datasets, you can run the following script:
+In case you want to train SyncNet on your own datasets, you can run the following script. The data processing pipeline for SyncNet is the same as U-Net. 
 
 ```bash
 ./train_syncnet.sh
 ```
+
+After `validations_steps` training, the loss charts will be saved in `train_output_dir`. They contain both the training and validation loss.
