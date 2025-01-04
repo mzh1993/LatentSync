@@ -200,7 +200,6 @@ def main(config):
     # Validation pipeline
     pipeline = LipsyncPipeline(
         vae=vae,
-        audio_processor=None,
         audio_encoder=audio_encoder,
         unet=unet,
         scheduler=noise_scheduler,
@@ -257,7 +256,7 @@ def main(config):
                 if batch["mel"] != []:
                     mel = batch["mel"].to(device, dtype=torch.float16)
 
-                mel_overlap_list = []
+                audio_embeds_list = []
                 try:
                     for idx in range(len(batch["video_path"])):
                         video_path = batch["video_path"][idx]
@@ -265,22 +264,21 @@ def main(config):
 
                         with torch.no_grad():
                             audio_feat = audio_encoder.audio2feat(video_path)
-                        mel_overlap = audio_encoder.crop_overlap_audio_window(audio_feat, start_idx)
-                        mel_overlap_list.append(mel_overlap)
+                        audio_embeds = audio_encoder.crop_overlap_audio_window(audio_feat, start_idx)
+                        audio_embeds_list.append(audio_embeds)
                 except Exception as e:
                     logger.info(f"{type(e).__name__} - {e} - {video_path}")
                     continue
-                mel_overlap = torch.stack(mel_overlap_list)  # (B, 16, 50, 384)
-                mel_overlap = mel_overlap.to(device, dtype=torch.float16)
+                audio_embeds = torch.stack(audio_embeds_list)  # (B, 16, 50, 384)
+                audio_embeds = audio_embeds.to(device, dtype=torch.float16)
             else:
-                mel_overlap = None
+                audio_embeds = None
 
             # Convert videos to latent space
             gt_images = batch["gt"].to(device, dtype=torch.float16)
             gt_masked_images = batch["masked_gt"].to(device, dtype=torch.float16)
             mask = batch["mask"].to(device, dtype=torch.float16)
             ref_images = batch["ref"].to(device, dtype=torch.float16)
-            pixel_mask = mask.clone()
 
             gt_images = rearrange(gt_images, "b f c h w -> (b f) c h w")
             gt_masked_images = rearrange(gt_masked_images, "b f c h w -> (b f) c h w")
@@ -320,7 +318,7 @@ def main(config):
                 noise = torch.randn_like(gt_latents)
                 noise = noise[:, :, 0:1].repeat(
                     1, 1, config.data.num_frames, 1, 1
-                )  # Using the same noise for all frames
+                )  # Using the same noise for all frames, refer to the paper: https://arxiv.org/abs/2308.09716
 
             bsz = gt_latents.shape[0]
 
@@ -345,7 +343,7 @@ def main(config):
             # Predict the noise and compute loss
             # Mixed-precision training
             with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=config.run.mixed_precision_training):
-                pred_noise = unet(unet_input, timesteps, encoder_hidden_states=mel_overlap).sample
+                pred_noise = unet(unet_input, timesteps, encoder_hidden_states=audio_embeds).sample
 
             if config.run.recon_loss_weight != 0:
                 recon_loss = F.mse_loss(pred_noise.float(), target.float(), reduction="mean")
@@ -419,6 +417,7 @@ def main(config):
                 """ <<< gradient clipping <<< """
                 optimizer.step()
 
+            # Check the grad of attn blocks for debugging
             # print(unet.module.up_blocks[3].attentions[2].transformer_blocks[0].audio_cross_attn.attn.to_q.weight.grad)
 
             lr_scheduler.step()

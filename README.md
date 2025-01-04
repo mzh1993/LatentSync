@@ -112,6 +112,8 @@ Run the script for inference, which requires about 6.5 GB GPU memory.
 ./inference.sh
 ```
 
+You can change the parameter `guidance_scale` to 1.5 to improve the lip-sync accuracy.
+
 ## 🔄 Data Processing Pipeline
 
 The complete data processing pipeline includes the following steps:
