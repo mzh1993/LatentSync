@@ -114,7 +114,7 @@ def main(config):
     audio_encoder = Audio2Feature(
         model_path=whisper_model_path,
         device=device,
-        audio_cache_dir=config.data.audio_cache_dir,
+        audio_embeds_cache_dir=config.data.audio_embeds_cache_dir,
         num_frames=config.data.num_frames,
     )
 

@@ -1,4 +1,5 @@
 # Adapted from https://github.com/primepake/wav2lip_288x288/blob/master/models/syncnetv2.py
+# The code here is for ablation study.
 
 from torch import nn
 from torch.nn import functional as F

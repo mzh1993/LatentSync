@@ -3,7 +3,8 @@ data:
   train_output_dir: debug/unet
   train_fileslist: /mnt/bn/maliva-gen-ai-v2/chunyu.li/fileslist/all_data_v6.txt
   train_data_dir: ""
-  audio_cache_dir: /mnt/bn/maliva-gen-ai-v2/chunyu.li/audio_cache/whisper_new
+  audio_embeds_cache_dir: /mnt/bn/maliva-gen-ai-v2/chunyu.li/audio_cache/whisper_new
+  audio_mel_cache_dir: /mnt/bn/maliva-gen-ai-v2/chunyu.li/audio_cache/mel_new
 
   val_video_path: assets/demo1_video.mp4
   val_audio_path: assets/demo1_audio.wav
@@ -83,8 +84,8 @@ model:
   unet_use_temporal_attention: false
 
   # Actually we don't use the motion module in the final version of LatentSync
-  # When we started the project, we used the codebase of AnimateDiff and tried motion module
-  # But the results are poor, and we decied to leave the code here for possible future usage
+  # When we started the project, we used the codebase of AnimateDiff and tried motion module, the results are poor
+  # We decied to leave the code here for possible future usage
   use_motion_module: false
   motion_module_resolutions: [1, 2, 4, 8]
   motion_module_mid_block: false

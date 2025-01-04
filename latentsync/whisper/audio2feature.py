@@ -11,11 +11,11 @@ class Audio2Feature:
         self,
         model_path="checkpoints/whisper/tiny.pt",
         device=None,
-        audio_cache_dir=None,
+        audio_embeds_cache_dir=None,
         num_frames=16,
     ):
         self.model = load_model(model_path, device)
-        self.audio_cache_dir = audio_cache_dir
+        self.audio_embeds_cache_dir = audio_embeds_cache_dir
         self.num_frames = num_frames
         self.embedding_dim = self.model.dims.n_audio_state
 
@@ -115,22 +115,22 @@ class Audio2Feature:
         return concatenated_array
 
     def audio2feat(self, audio_path):
-        if self.audio_cache_dir == "" or self.audio_cache_dir is None:
+        if self.audio_embeds_cache_dir == "" or self.audio_embeds_cache_dir is None:
             return self._audio2feat(audio_path)
 
-        audio_cache_path = os.path.join(self.audio_cache_dir, os.path.basename(audio_path) + ".pt")
+        audio_embeds_cache_path = os.path.join(self.audio_embeds_cache_dir, os.path.basename(audio_path) + ".pt")
 
-        if os.path.isfile(audio_cache_path):
+        if os.path.isfile(audio_embeds_cache_path):
             try:
-                audio_feat = torch.load(audio_cache_path)
+                audio_feat = torch.load(audio_embeds_cache_path)
             except Exception as e:
-                print(f"{type(e).__name__} - {e} - {audio_cache_path}")
-                os.remove(audio_cache_path)
+                print(f"{type(e).__name__} - {e} - {audio_embeds_cache_path}")
+                os.remove(audio_embeds_cache_path)
                 audio_feat = self._audio2feat(audio_path)
-                torch.save(audio_feat, audio_cache_path)
+                torch.save(audio_feat, audio_embeds_cache_path)
         else:
             audio_feat = self._audio2feat(audio_path)
-            torch.save(audio_feat, audio_cache_path)
+            torch.save(audio_feat, audio_embeds_cache_path)
 
         return audio_feat
 
@@ -147,7 +147,7 @@ class Audio2Feature:
 
 if __name__ == "__main__":
     audio_encoder = Audio2Feature(model_path="checkpoints/whisper/tiny.pt")
-    audio_path = "./validation/hdtf_val.mp4"
+    audio_path = "assets/demo1_audio.wav"
     array = audio_encoder.audio2feat(audio_path)
     print(array.shape)
     fps = 25

@@ -46,8 +46,8 @@ class SyncNetDataset(Dataset):
             config.data.audio_sample_rate // config.data.video_fps * config.data.num_frames
         )
         self.image_processor = ImageProcessor(resolution=config.data.resolution, mask="half")
-        self.audio_cache_dir = config.data.audio_cache_dir
-        os.makedirs(self.audio_cache_dir, exist_ok=True)
+        self.audio_mel_cache_dir = config.data.audio_mel_cache_dir
+        os.makedirs(self.audio_mel_cache_dir, exist_ok=True)
 
     def __len__(self):
         return len(self.video_paths)
@@ -108,7 +108,7 @@ class SyncNetDataset(Dataset):
                 frames, wrong_frames, start_idx = self.get_frames(vr)
 
                 mel_cache_path = os.path.join(
-                    self.audio_cache_dir, os.path.basename(video_path).replace(".mp4", "_mel.pt")
+                    self.audio_mel_cache_dir, os.path.basename(video_path).replace(".mp4", "_mel.pt")
                 )
 
                 if os.path.isfile(mel_cache_path):

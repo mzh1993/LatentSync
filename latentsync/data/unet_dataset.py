@@ -51,8 +51,8 @@ class UNetDataset(Dataset):
         self.mask = config.data.mask
         self.mask_image = load_fixed_mask(self.resolution)
         self.load_audio_data = config.model.add_audio_layer and config.run.use_syncnet
-        self.audio_cache_dir = config.data.audio_cache_dir
-        os.makedirs(self.audio_cache_dir, exist_ok=True)
+        self.audio_mel_cache_dir = config.data.audio_mel_cache_dir
+        os.makedirs(self.audio_mel_cache_dir, exist_ok=True)
 
     def __len__(self):
         return len(self.video_paths)
@@ -66,19 +66,6 @@ class UNetDataset(Dataset):
         start_idx = int(80.0 * (start_index / float(self.video_fps)))
         end_idx = start_idx + self.mel_window_length
         return original_mel[:, start_idx:end_idx].unsqueeze(0)
-
-    def crop_overlap_audio_window(self, original_mel, start_index):
-        half_num_frames = self.num_frames // 2
-        if start_index - half_num_frames < 0:
-            return None
-        mels = []
-        for i in range(start_index, start_index + self.num_frames):
-            mel = self.crop_audio_window(original_mel, i - half_num_frames)
-            if mel.shape[-1] != self.mel_window_length:
-                return None
-            mels.append(mel)
-        mel_overlap = torch.stack(mels)
-        return mel_overlap
 
     def get_frames(self, video_reader: VideoReader):
         total_num_frames = len(video_reader)
@@ -126,8 +113,7 @@ class UNetDataset(Dataset):
 
                 if self.load_audio_data:
                     mel_cache_path = os.path.join(
-                        "/mnt/bn/maliva-gen-ai-v2/chunyu.li/audio_cache/mel_new",
-                        os.path.basename(video_path).replace(".mp4", "_mel.pt"),
+                        self.audio_mel_cache_dir, os.path.basename(video_path).replace(".mp4", "_mel.pt")
                     )
 
                     if os.path.isfile(mel_cache_path):
@@ -146,15 +132,8 @@ class UNetDataset(Dataset):
 
                     if mel.shape[-1] != self.mel_window_length:
                         continue
-
-                    # mel_overlap = self.crop_overlap_audio_window(original_mel, start_idx)
-
-                    # if mel_overlap is None:
-                    #     continue
-                    mel_overlap = []
                 else:
                     mel = []
-                    mel_overlap = []
 
                 gt, masked_gt, mask = image_processor.prepare_masks_and_masked_images(
                     continuous_frames, affine_transform=False
@@ -176,7 +155,6 @@ class UNetDataset(Dataset):
             gt=gt,
             masked_gt=masked_gt,
             ref=ref,
-            mel_overlap=mel_overlap,
             mel=mel,
             mask=mask,
             video_path=video_path,
