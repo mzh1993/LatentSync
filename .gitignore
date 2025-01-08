@@ -25,6 +25,9 @@ wandb/
 /venv/
 /detect_results/
 /temp
+/stabilityai
+/input
+/checkpoints
 
 # checkpoint files
 *.safetensors
